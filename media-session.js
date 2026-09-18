@@ -1,4 +1,4 @@
-/* Media Session API – systémové ovládání Berniátoru v Androidu / PWA.
+/* Media Session API – systémové ovládání Generátoru v Androidu / PWA.
    Stejný princip jako ve funkční aplikaci Šumy: při přehrávání Web Audio
    udržujeme aktivní také téměř neslyšitelný HTMLAudioElement delší než 5 s. */
 (() => {
@@ -76,7 +76,7 @@
   function updateMetadata(){
     navigator.mediaSession.metadata = new MediaMetadata({
       title: currentFrequency(),
-      artist: 'Berniátor',
+      artist: 'Generátor',
       album: 'Generátor frekvence',
       artwork: [{ src: icon, sizes: '512x512', type: 'image/png' }]
     });
