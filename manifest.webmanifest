@@ -1,6 +1,6 @@
 {
-  "name": "Berniátor",
-  "short_name": "Berniátor",
+  "name": "Generátor",
+  "short_name": "Generátor",
   "description": "Nakresli 1 periodu v mřížce a přehraj ji jako zvuk. Funguje i offline.",
   "lang": "cs",
   "start_url": "./?source=pwa",
