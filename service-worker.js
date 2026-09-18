@@ -1,4 +1,4 @@
-/* Berniátor SW – robustní offline režim + Media Session */
+/* Generátor SW – robustní offline režim + Media Session */
 const VERSION = 'v17-media-session-robust';
 const CACHE_NAME = 'berniator-core-' + VERSION;
 
