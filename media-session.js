@@ -64,6 +64,11 @@
   mediaBridge.style.left = '-10px';
   document.body.appendChild(mediaBridge);
 
+  // Rozlišíme pauzu vyvolanou aplikací od pauzy, kterou provedl přímo Android.
+  // Některé verze Androidu/Chromu totiž pozastaví HTMLAudioElement z notifikace
+  // bez spolehlivého zavolání Media Session handleru "pause".
+  let ignoreNextBridgePause = false;
+
   function appIsPlaying(){
     return toggleBtn.textContent.includes('Stop');
   }
@@ -97,6 +102,10 @@
   }
 
   function stopBridge(){
+    // Pokud jsme audio pozastavili sami, následná událost "pause" nesmí znovu
+    // mačkat Stop v aplikaci. Příznak nastavujeme jen tehdy, když audio skutečně
+    // běží a událost pause tedy očekáváme.
+    if (!mediaBridge.paused) ignoreNextBridgePause = true;
     try { mediaBridge.pause(); } catch (_) {}
     try { mediaBridge.currentTime = 0; } catch (_) {}
     setPlaybackState('paused');
@@ -109,8 +118,10 @@
   }
 
   function requestPause(){
-    stopBridge();
+    // Hlavní generátor zastavíme stejným tlačítkem jako uvnitř aplikace.
+    // Capture listener při tomto kliknutí zároveň bezpečně zastaví mediaBridge.
     if (appIsPlaying()) toggleBtn.click();
+    else stopBridge();
   }
 
   // Capture fáze je zásadní: audio.play() proběhne přímo v původním
@@ -144,7 +155,16 @@
 
   mediaBridge.addEventListener('play', () => setPlaybackState('playing'));
   mediaBridge.addEventListener('pause', () => {
-    if (!appIsPlaying()) setPlaybackState('paused');
+    setPlaybackState('paused');
+
+    if (ignoreNextBridgePause) {
+      ignoreNextBridgePause = false;
+      return;
+    }
+
+    // Záloha pro Android: pokud systém pozastaví přímo mediaBridge a obejde
+    // Media Session handler, zastavíme i skutečný Web Audio generátor.
+    if (appIsPlaying()) toggleBtn.click();
   });
 
   updateMetadata();
